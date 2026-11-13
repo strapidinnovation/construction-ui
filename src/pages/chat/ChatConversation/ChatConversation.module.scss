@@ -1,0 +1,57 @@
+@use '@/styles/mixins' as *;
+
+.project-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-shrink: 0;
+  max-width: 220px;
+  padding: 0.25rem 0.6rem;
+  border-radius: $radius-pill;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 0.75rem;
+  font-weight: 600;
+  @include focus-ring;
+
+  span {
+    @include truncate;
+  }
+
+  &:hover {
+    background: color-mix(in srgb, var(--accent) 20%, transparent);
+  }
+
+  @include respond-to(sm) {
+    display: none;
+  }
+}
+
+.working {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
+  margin-left: auto;
+  color: var(--accent);
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+
+.center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  height: 100%;
+  color: var(--muted);
+}
+
+.messages {
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+  max-width: $chat-column;
+  margin: 0 auto;
+}

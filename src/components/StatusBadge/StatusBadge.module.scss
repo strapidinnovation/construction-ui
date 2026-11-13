@@ -1,0 +1,29 @@
+@use '@/styles/mixins' as *;
+
+.badge {
+  --tone: var(--status-on-track);
+
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.22rem 0.6rem 0.22rem 0.5rem;
+  border-radius: $radius-pill;
+  background: color-mix(in srgb, var(--tone) 13%, transparent);
+  color: var(--tone);
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+
+  @each $status in on-track, at-risk, delayed, on-hold, completed {
+    &[data-status='#{$status}'] {
+      --tone: var(--status-#{$status});
+    }
+  }
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}

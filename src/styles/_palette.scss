@@ -1,0 +1,46 @@
+// Ruh brand palette (ruh.ai): magenta #AE00D0, violet #7B5AFF, navy #12195E,
+// near-black purple #0B020D, cream #F5F2EC, ink #0A0A0A.
+
+@mixin palette {
+  color-scheme: light;
+
+  --brand-primary: #ae00d0;
+  --brand-secondary: #7b5aff;
+  --brand-tertiary: #12195e;
+  --brand-gradient: linear-gradient(120deg, #ae00d0, #7b5aff);
+  --brand-glow: radial-gradient(ellipse at 50% 0%, rgb(174 0 208 / 0.32), transparent 60%);
+
+  --rail-bg: #0b020d;
+  --rail-text: rgb(231 209 235 / 0.62);
+  --rail-active: #ffffff;
+  --rail-hover: rgb(226 215 228 / 0.08);
+
+  --bg: #f7f5f2;
+  --surface: #ffffff;
+  --surface-2: #f5f2ec;
+  --surface-3: #ece6ee;
+  --border: #e9e4ea;
+  --border-strong: #d9d0dc;
+  --text: #0a0a0a;
+  --text-2: #33303a;
+  --muted: #6b6b72;
+
+  --accent: #ae00d0;
+  --accent-strong: #8e00aa;
+  --accent-soft: rgb(174 0 208 / 0.08);
+  --on-accent: #ffffff;
+
+  --status-on-track: #16a34a;
+  --status-at-risk: #ea580c;
+  --status-delayed: #dc2626;
+  --status-on-hold: #64748b;
+  --status-completed: #7b5aff;
+
+  --danger: #dc2626;
+  --success: #16a34a;
+
+  --code-bg: #f5f2ec;
+  --shadow-sm: 0 1px 2px rgb(11 2 13 / 0.05);
+  --shadow-md: 0 10px 28px -12px rgb(60 10 70 / 0.18);
+  --shadow-lg: 0 24px 48px -16px rgb(60 10 70 / 0.28);
+}

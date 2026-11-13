@@ -1,0 +1,32 @@
+@use '@/styles/mixins' as *;
+
+.track {
+  --tone: var(--accent);
+
+  width: 100%;
+  overflow: hidden;
+  border-radius: $radius-pill;
+  background: var(--surface-3);
+
+  @each $status in on-track, at-risk, delayed, on-hold, completed {
+    &[data-status='#{$status}'] {
+      --tone: var(--status-#{$status});
+    }
+  }
+}
+
+.sm {
+  height: 4px;
+}
+
+.md {
+  height: 8px;
+}
+
+.fill {
+  width: var(--value);
+  height: 100%;
+  border-radius: inherit;
+  background: var(--tone);
+  transition: width 600ms $ease;
+}

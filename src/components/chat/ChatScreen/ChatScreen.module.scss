@@ -1,0 +1,127 @@
+@use '@/styles/mixins' as *;
+
+.screen {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 56px;
+  padding: 0.6rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in srgb, var(--bg) 85%, transparent);
+  backdrop-filter: blur(8px);
+}
+
+.menu {
+  display: none;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: $radius-sm;
+  color: var(--text-2);
+  cursor: pointer;
+  @include focus-ring;
+
+  &:hover {
+    background: var(--surface-2);
+  }
+
+  @include respond-to(md) {
+    display: grid;
+  }
+}
+
+.title {
+  @include truncate;
+  min-width: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 1.75rem 1.25rem 1rem;
+}
+
+.footer {
+  padding: 0.5rem 1.25rem 1.1rem;
+  background: linear-gradient(to bottom, transparent, var(--bg) 30%);
+}
+
+.error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  max-width: $chat-column;
+  margin: 0 auto 0.6rem;
+  color: var(--danger);
+  font-size: 0.82rem;
+}
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: clamp(1rem, 8vh, 5rem) 0 1rem;
+  text-align: center;
+  animation: fade 400ms $ease;
+
+  h2 {
+    margin-top: 1.1rem;
+    font-size: 1.65rem;
+    font-weight: 700;
+  }
+
+  > p {
+    max-width: 52ch;
+    margin-top: 0.5rem;
+    color: var(--muted);
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+.hero-icon {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  place-items: center;
+
+  &::before {
+    position: absolute;
+    inset: -60%;
+    z-index: -1;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle,
+      rgb(174 0 208 / 0.22),
+      rgb(123 90 255 / 0.08) 45%,
+      transparent 70%
+    );
+    content: '';
+  }
+}
+
+.hero h2 {
+  background: var(--brand-gradient);
+  background-clip: text;
+  color: transparent;
+}

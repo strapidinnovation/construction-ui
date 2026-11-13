@@ -1,0 +1,51 @@
+@use '@/styles/mixins' as *;
+
+.button {
+  @include button-base;
+  padding: 0.6rem 1.1rem;
+  white-space: nowrap;
+
+  &:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+}
+
+.primary {
+  background: var(--brand-primary);
+  color: #fff;
+  box-shadow: 0 6px 18px -8px rgb(174 0 208 / 0.7);
+
+  &:hover:not(:disabled) {
+    background: var(--brand-gradient);
+  }
+}
+
+.secondary {
+  border-color: var(--border);
+  background: var(--surface);
+  color: var(--text);
+
+  &:hover:not(:disabled) {
+    border-color: var(--border-strong);
+    background: var(--surface-2);
+  }
+}
+
+.ghost {
+  color: var(--text-2);
+
+  &:hover:not(:disabled) {
+    background: var(--surface-2);
+    color: var(--text);
+  }
+}
+
+.danger {
+  border-color: color-mix(in srgb, var(--danger) 35%, transparent);
+  background: color-mix(in srgb, var(--danger) 8%, transparent);
+  color: var(--danger);
+
+  &:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--danger) 15%, transparent);
+  }
+}

@@ -1,0 +1,51 @@
+@use '@/styles/mixins' as *;
+
+.suggestions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.6rem;
+  width: 100%;
+  margin-top: 2rem;
+
+  @include respond-to(sm) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.suggestion {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: $radius;
+  background: var(--surface);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color $transition,
+    background $transition,
+    transform $transition;
+  @include focus-ring;
+
+  strong {
+    font-size: 0.88rem;
+    font-weight: 600;
+  }
+
+  span {
+    color: var(--muted);
+    font-size: 0.8rem;
+  }
+
+  &:hover:not(:disabled) {
+    border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+    background: color-mix(in srgb, var(--accent) 4%, var(--surface));
+    transform: translateY(-1px);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: wait;
+  }
+}

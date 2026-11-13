@@ -1,0 +1,178 @@
+@use '@/styles/mixins' as *;
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.tabs {
+  display: flex;
+  gap: 0.25rem;
+  max-width: 100%;
+  padding: 0.25rem;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: $radius-pill;
+  background: var(--surface);
+}
+
+.tab {
+  padding: 0.45rem 0.9rem;
+  border-radius: $radius-pill;
+  color: var(--muted);
+  font-size: 0.84rem;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background $transition,
+    color $transition;
+  @include focus-ring;
+
+  &:hover {
+    color: var(--text);
+  }
+}
+
+.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+
+  &:hover {
+    color: var(--accent);
+  }
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 280px;
+  padding: 0 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: $radius-pill;
+  background: var(--surface);
+  color: var(--muted);
+  transition:
+    border-color $transition,
+    box-shadow $transition;
+
+  &:focus-within {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+
+  input {
+    flex: 1;
+    min-width: 0;
+    padding: 0.58rem 0;
+    border: 0;
+    outline: 0;
+    background: none;
+    color: var(--text);
+    font-size: 0.875rem;
+
+    &::-webkit-search-cancel-button {
+      display: none;
+    }
+  }
+
+  button {
+    display: grid;
+    place-items: center;
+    padding: 0.2rem;
+    border-radius: 50%;
+    cursor: pointer;
+
+    &:hover {
+      background: var(--surface-2);
+      color: var(--text);
+    }
+  }
+
+  @include respond-to(sm) {
+    width: 100%;
+  }
+}
+
+.switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--text-2);
+  font-size: 0.85rem;
+  cursor: pointer;
+  user-select: none;
+
+  input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+.track {
+  position: relative;
+  width: 34px;
+  height: 20px;
+  border-radius: $radius-pill;
+  background: var(--surface-3);
+  transition: background $transition;
+
+  &::after {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.25);
+    content: '';
+    transition: transform $transition;
+  }
+
+  input:checked + & {
+    background: var(--accent);
+  }
+
+  input:checked + &::after {
+    transform: translateX(14px);
+  }
+
+  input:focus-visible + & {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+}
+
+.count {
+  margin-bottom: 0.75rem;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+  gap: 1rem;
+
+  @include respond-to(sm) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.skeleton {
+  border-radius: $radius-lg;
+}

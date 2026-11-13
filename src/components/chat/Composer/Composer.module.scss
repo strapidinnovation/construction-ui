@@ -1,0 +1,102 @@
+@use '@/styles/mixins' as *;
+
+.composer {
+  width: 100%;
+  max-width: $chat-column;
+  margin: 0 auto;
+}
+
+.box {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+  padding: 0.6rem 0.6rem 0.6rem 1.1rem;
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  background: var(--surface);
+  box-shadow: var(--shadow-md);
+  transition:
+    border-color $transition,
+    box-shadow $transition;
+
+  &:focus-within {
+    border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
+    box-shadow:
+      var(--shadow-md),
+      0 0 0 3px var(--accent-soft);
+  }
+
+  textarea {
+    flex: 1;
+    min-height: 24px;
+    max-height: 220px;
+    padding: 0.45rem 0;
+    border: 0;
+    outline: 0;
+    background: none;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    resize: none;
+
+    &::placeholder {
+      color: var(--muted);
+    }
+  }
+}
+
+.send {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--text);
+  color: var(--bg);
+  cursor: pointer;
+  transition:
+    background $transition,
+    opacity $transition,
+    transform $transition;
+  @include focus-ring;
+
+  &:hover:not(:disabled) {
+    background: var(--accent);
+    color: var(--on-accent);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.94);
+  }
+
+  &:disabled {
+    opacity: 0.25;
+    cursor: not-allowed;
+  }
+}
+
+.hint {
+  margin-top: 0.55rem;
+  color: var(--muted);
+  font-size: 0.72rem;
+  text-align: center;
+
+  kbd {
+    padding: 0.05rem 0.35rem;
+    border: 1px solid var(--border);
+    border-bottom-width: 2px;
+    border-radius: 4px;
+    background: var(--surface);
+    font-family: $font-sans;
+    font-size: 0.68rem;
+  }
+
+  @include respond-to(sm) {
+    display: none;
+  }
+}
+
+.over {
+  color: var(--danger);
+  font-weight: 500;
+}

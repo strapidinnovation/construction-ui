@@ -1,0 +1,307 @@
+@use '@/styles/mixins' as *;
+
+.eyebrow {
+  @include eyebrow;
+  color: var(--brand-primary);
+}
+
+.hero {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+  padding: 4rem 2rem 3.5rem;
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  background: var(--surface);
+  text-align: center;
+
+  &::before {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(ellipse 60% 70% at 50% 0%, rgb(174 0 208 / 0.14), transparent 70%),
+      radial-gradient(ellipse 40% 50% at 85% 100%, rgb(123 90 255 / 0.1), transparent 70%);
+    content: '';
+  }
+
+  .eyebrow {
+    margin-top: 1.5rem;
+  }
+
+  h1 {
+    max-width: 22ch;
+    margin-top: 0.75rem;
+    text-wrap: balance;
+    font-size: clamp(2rem, 4.2vw, 3.25rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.08;
+
+    span {
+      background: var(--brand-gradient);
+      background-clip: text;
+      color: transparent;
+    }
+  }
+
+  p {
+    max-width: 60ch;
+    margin-top: 1.1rem;
+    color: var(--muted);
+    font-size: 1.05rem;
+  }
+
+  @include respond-to(md) {
+    padding: 2.75rem 1.25rem 2.5rem;
+  }
+}
+
+.cta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 2rem;
+
+  a {
+    padding: 0.8rem 1.4rem;
+    font-size: 0.95rem;
+  }
+}
+
+.section {
+  margin-top: 3.5rem;
+}
+
+.section-heading {
+  margin-bottom: 1.25rem;
+
+  h2 {
+    margin-top: 0.4rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+}
+
+.features {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+
+  @include respond-to(lg) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include respond-to(sm) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.feature {
+  @include card;
+  padding: 1.25rem;
+  transition:
+    border-color $transition,
+    box-shadow $transition,
+    transform $transition;
+
+  &:hover {
+    border-color: rgb(174 0 208 / 0.3);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+  }
+
+  h3 {
+    margin-top: 1rem;
+    font-size: 1rem;
+    font-weight: 700;
+  }
+
+  p {
+    margin-top: 0.35rem;
+    color: var(--muted);
+    font-size: 0.875rem;
+  }
+}
+
+.feature-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.icon {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: $radius;
+  background: var(--accent-soft);
+  color: var(--brand-primary);
+}
+
+.time {
+  padding: 0.2rem 0.55rem;
+  border-radius: $radius-pill;
+  background: var(--surface-2);
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  padding: 0;
+  list-style: none;
+
+  @include respond-to(md) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.step {
+  position: relative;
+  padding: 1.5rem;
+  border-radius: $radius-lg;
+  background: var(--surface-2);
+
+  h3 {
+    margin-top: 0.85rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+  }
+
+  p {
+    margin-top: 0.4rem;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+}
+
+.step-number {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.5rem;
+  background: var(--brand-gradient);
+  background-clip: text;
+  color: transparent;
+  font-size: 1.5rem;
+  font-weight: 900;
+}
+
+.step-icon {
+  color: var(--brand-primary);
+}
+
+.examples {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.example {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.1rem;
+  border: 1px solid var(--border);
+  border-radius: $radius-pill;
+  background: var(--surface);
+  color: var(--text-2);
+  font-size: 0.9rem;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color $transition,
+    background $transition,
+    color $transition;
+  @include focus-ring;
+
+  svg {
+    flex-shrink: 0;
+    color: var(--brand-primary);
+    transition: transform $transition;
+  }
+
+  &:hover:not(:disabled) {
+    border-color: rgb(174 0 208 / 0.35);
+    background: var(--accent-soft);
+    color: var(--text);
+
+    svg {
+      transform: translateX(2px);
+    }
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: wait;
+  }
+}
+
+.error {
+  margin-top: 0.75rem;
+  color: var(--danger);
+  font-size: 0.875rem;
+}
+
+.areas {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+
+  @include respond-to(md) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.area {
+  @include card;
+  display: flex;
+  gap: 1rem;
+  padding: 1.25rem;
+  transition:
+    border-color $transition,
+    box-shadow $transition;
+  @include focus-ring;
+
+  &:hover {
+    border-color: rgb(174 0 208 / 0.3);
+    box-shadow: var(--shadow-md);
+  }
+
+  h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 1rem;
+    font-weight: 700;
+
+    svg {
+      color: var(--muted);
+    }
+  }
+
+  p {
+    margin-top: 0.25rem;
+    color: var(--muted);
+    font-size: 0.875rem;
+  }
+}
+
+.note {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.8rem;
+  text-align: center;
+}

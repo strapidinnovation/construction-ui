@@ -1,0 +1,232 @@
+@use '@/styles/mixins' as *;
+
+.layout {
+  display: flex;
+  height: 100%;
+
+  @include respond-to(sm) {
+    height: calc(100vh - 72px);
+  }
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  width: $chat-sidebar-width;
+  border-right: 1px solid var(--border);
+  background: var(--surface-2);
+
+  @include respond-to(md) {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: $rail-width;
+    z-index: 30;
+    box-shadow: var(--shadow-lg);
+    transform: translateX(calc(-100% - #{$rail-width}));
+    transition: transform 240ms $ease;
+  }
+
+  @include respond-to(sm) {
+    left: 0;
+    bottom: 72px;
+    width: min(86vw, $chat-sidebar-width);
+    transform: translateX(-100%);
+  }
+}
+
+.open {
+  transform: none;
+}
+
+.backdrop {
+  display: none;
+
+  @include respond-to(md) {
+    position: fixed;
+    inset: 0;
+    z-index: 25;
+    display: block;
+    background: rgb(0 0 0 / 0.35);
+    backdrop-filter: blur(2px);
+  }
+}
+
+.sidebar-header {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.85rem 0.75rem 0.5rem;
+}
+
+.new-chat {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: $radius;
+  background: var(--surface);
+  font-size: 0.875rem;
+  font-weight: 500;
+  box-shadow: var(--shadow-sm);
+  transition:
+    border-color $transition,
+    background $transition;
+  @include focus-ring;
+
+  svg {
+    color: var(--accent);
+  }
+
+  &:hover {
+    border-color: var(--border-strong);
+  }
+}
+
+.close-button {
+  display: none;
+  place-items: center;
+  width: 38px;
+  border-radius: $radius;
+  color: var(--muted);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--surface-3);
+    color: var(--text);
+  }
+
+  @include respond-to(md) {
+    display: grid;
+  }
+}
+
+.list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.25rem 0.5rem 1rem;
+}
+
+.skeletons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.75rem 0.25rem;
+}
+
+.note {
+  padding: 1rem 0.5rem;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.empty-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 2.5rem 1rem;
+  color: var(--muted);
+  font-size: 0.82rem;
+  text-align: center;
+}
+
+.group {
+  margin-top: 0.9rem;
+
+  h2 {
+    @include eyebrow;
+    padding: 0 0.6rem 0.35rem;
+    font-size: 0.68rem;
+  }
+
+  ul {
+    list-style: none;
+  }
+
+  li {
+    position: relative;
+  }
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 2.1rem 0.5rem 0.6rem;
+  border-radius: $radius-sm;
+  color: var(--text-2);
+  font-size: 0.86rem;
+  transition: background $transition;
+  @include focus-ring;
+
+  &:hover {
+    background: var(--surface-3);
+    color: var(--text);
+  }
+}
+
+.active {
+  background: var(--surface);
+  color: var(--text);
+  font-weight: 500;
+  box-shadow: var(--shadow-sm);
+
+  &:hover {
+    background: var(--surface);
+  }
+}
+
+.item-title {
+  @include truncate;
+  flex: 1;
+}
+
+.busy {
+  flex-shrink: 0;
+  color: var(--accent);
+}
+
+.delete {
+  position: absolute;
+  top: 50%;
+  right: 0.3rem;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: $radius-sm;
+  color: var(--muted);
+  opacity: 0;
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition:
+    opacity $transition,
+    background $transition,
+    color $transition;
+  @include focus-ring;
+
+  li:hover &,
+  &:focus-visible {
+    opacity: 1;
+  }
+
+  &:hover {
+    background: color-mix(in srgb, var(--danger) 12%, transparent);
+    color: var(--danger);
+  }
+
+  @media (hover: none) {
+    opacity: 1;
+  }
+}
+
+.main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  background: var(--bg);
+}

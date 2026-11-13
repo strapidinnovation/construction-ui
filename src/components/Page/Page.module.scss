@@ -1,0 +1,76 @@
+@use '@/styles/mixins' as *;
+
+.page {
+  max-width: $content-max;
+  margin: 0 auto;
+  padding: 2.25rem 2.5rem 3rem;
+  animation: enter 320ms $ease;
+
+  @include respond-to(md) {
+    padding: 1.5rem 1.25rem 2.5rem;
+  }
+}
+
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+}
+
+.heading {
+  min-width: 0;
+
+  h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  p {
+    margin-top: 0.35rem;
+    color: var(--muted);
+  }
+}
+
+.eyebrow {
+  @include eyebrow;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.5rem;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.card {
+  @include card;
+  padding: 1.25rem;
+  min-width: 0;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+
+  h2 {
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+}
