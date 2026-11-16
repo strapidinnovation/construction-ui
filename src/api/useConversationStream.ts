@@ -6,6 +6,7 @@ import { keys } from './keys.ts';
 import type { ChatMessage, Conversation } from './types.ts';
 
 const LIST_REFRESH_MS = 1_000;
+const AGENT_DATA = [['projects'], ['vendors'], ['orders'], ['payments'], ['change-orders']];
 
 /**
  * Keeps a conversation live while it is on screen: every new or edited
@@ -25,6 +26,9 @@ export function useConversationStream(conversationId: string) {
       listTimer = window.setTimeout(() => {
         listTimer = undefined;
         void qc.invalidateQueries({ queryKey: keys.conversations });
+        // The agent may have changed projects, orders, payments or change orders.
+        for (const queryKey of AGENT_DATA)
+          void qc.invalidateQueries({ queryKey, refetchType: 'none' });
       }, LIST_REFRESH_MS);
     };
 

@@ -16,7 +16,7 @@
     transform $transition;
   @include focus-ring;
 
-  @each $status in on-track, at-risk, delayed, on-hold, completed {
+  @each $status in planning, on-track, at-risk, delayed, on-hold, completed {
     &[data-status='#{$status}'] {
       --tone: var(--status-#{$status});
     }

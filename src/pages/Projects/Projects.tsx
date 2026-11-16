@@ -1,11 +1,17 @@
-import { FolderKanban, Search, X } from 'lucide-react';
+import { FolderKanban } from 'lucide-react';
 import { useSearchParams } from 'react-router';
 import { useProjects } from '../../api/queries.ts';
 import { PROJECT_FILTERS, type ProjectFilter } from '../../api/types.ts';
+import {
+  FilterBar,
+  FilterControls,
+  FilterTabs,
+  SearchBox,
+  Toggle,
+} from '../../components/FilterBar/FilterBar.tsx';
 import { Page } from '../../components/Page/Page.tsx';
 import { ProjectCard } from '../../components/ProjectCard/ProjectCard.tsx';
 import { EmptyState, ErrorState, Skeleton } from '../../components/States/States.tsx';
-import { cx } from '../../lib/cx.ts';
 import styles from './Projects.module.scss';
 
 const FILTER_LABEL: Record<ProjectFilter, string> = {
@@ -14,6 +20,7 @@ const FILTER_LABEL: Record<ProjectFilter, string> = {
   delayed: 'Delayed',
   attention: 'Needs attention',
   'on-hold': 'On hold',
+  planning: 'Planning',
 };
 
 const isFilter = (v: string | null): v is ProjectFilter =>
@@ -56,48 +63,24 @@ export default function Projects() {
       title="Projects"
       subtitle="Every build, most urgent first."
     >
-      <div className={styles.toolbar}>
-        <div className={styles.tabs} role="tablist" aria-label="Filter projects">
-          {PROJECT_FILTERS.map((f) => (
-            <button
-              key={f}
-              type="button"
-              role="tab"
-              aria-selected={f === filter}
-              className={cx(styles.tab, f === filter && styles.active)}
-              onClick={() => update({ filter: f === 'all' ? null : f })}
-            >
-              {FILTER_LABEL[f]}
-            </button>
-          ))}
-        </div>
-
-        <div className={styles.controls}>
-          <label className={styles.search}>
-            <Search size={16} />
-            <input
-              type="search"
-              placeholder="Search name, client, address"
-              value={search}
-              onChange={(e) => update({ q: e.target.value || null })}
-            />
-            {search && (
-              <button type="button" onClick={() => update({ q: null })} aria-label="Clear search">
-                <X size={14} />
-              </button>
-            )}
-          </label>
-          <label className={styles.switch}>
-            <input
-              type="checkbox"
-              checked={completed}
-              onChange={(e) => update({ completed: e.target.checked ? 'true' : null })}
-            />
-            <span className={styles.track} aria-hidden />
+      <FilterBar>
+        <FilterTabs
+          label="Filter projects"
+          options={PROJECT_FILTERS.map((f) => ({ value: f, label: FILTER_LABEL[f] }))}
+          value={filter}
+          onChange={(f) => update({ filter: f === 'all' ? null : f })}
+        />
+        <FilterControls>
+          <SearchBox
+            placeholder="Search name, client, address"
+            value={search}
+            onChange={(q) => update({ q: q || null })}
+          />
+          <Toggle checked={completed} onChange={(on) => update({ completed: on ? 'true' : null })}>
             Show completed
-          </label>
-        </div>
-      </div>
+          </Toggle>
+        </FilterControls>
+      </FilterBar>
 
       {projects.isError ? (
         <ErrorState error={projects.error} onRetry={() => void projects.refetch()} />

@@ -90,6 +90,33 @@
   }
 }
 
+.tabs {
+  display: flex;
+  margin-bottom: 1.25rem;
+}
+
+.tab-count {
+  margin-left: 0.4rem;
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.7;
+}
+
+.tab-alert {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.15rem;
+  height: 1.15rem;
+  margin-left: 0.4rem;
+  padding: 0 0.3rem;
+  border-radius: $radius-pill;
+  background: var(--status-delayed);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
 .kpis {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));

@@ -1,0 +1,325 @@
+@use '@/styles/mixins' as *;
+
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+// The tones for the three states, shared by bars, legends and pills.
+.wrap {
+  [data-state='completed'] {
+    --tone: var(--status-on-track);
+  }
+
+  [data-state='overdue'] {
+    --tone: var(--status-delayed);
+  }
+
+  [data-state='pending'] {
+    --tone: var(--accent);
+  }
+}
+
+// ---------------------------------------------------------------- totals
+
+.totals {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+
+  @include respond-to(md) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.total {
+  @include card;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.1rem 1.2rem 1.2rem;
+
+  header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  h3 {
+    font-size: 0.95rem;
+    font-weight: 650;
+  }
+
+  header p {
+    color: var(--muted);
+    font-size: 0.78rem;
+  }
+}
+
+.icon {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--icon-bg);
+  color: var(--icon);
+
+  [data-kind='collection'] & {
+    --icon: var(--status-on-track);
+    --icon-bg: color-mix(in srgb, var(--status-on-track) 12%, transparent);
+  }
+
+  [data-kind='vendor-payment'] & {
+    --icon: #5b3ce0;
+    --icon-bg: rgb(123 90 255 / 0.1);
+  }
+}
+
+.whole {
+  margin-left: auto;
+  font-size: 1.25rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.bar {
+  display: flex;
+  gap: 2px;
+  height: 8px;
+  overflow: hidden;
+  border-radius: $radius-pill;
+  background: var(--surface-3);
+
+  i {
+    min-width: 4px;
+    background: var(--tone);
+  }
+
+  i[data-state='pending'] {
+    background: color-mix(in srgb, var(--tone) 35%, transparent);
+  }
+}
+
+.figures {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin: 0;
+
+  dt {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--muted);
+    font-size: 0.75rem;
+    font-weight: 600;
+
+    i {
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      background: var(--tone);
+    }
+  }
+
+  [data-state='pending'] dt i {
+    background: color-mix(in srgb, var(--tone) 35%, transparent);
+  }
+
+  dd {
+    margin: 0.15rem 0 0;
+    font-size: 1rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  [data-state='overdue'][data-any='true'] dd:not(.sub) {
+    color: var(--tone);
+  }
+
+  .sub {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+}
+
+.net {
+  @include card;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.4rem 0.9rem;
+  padding: 0.85rem 1.2rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+
+  strong {
+    color: var(--text);
+    font-size: 1.05rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+
+    &[data-negative='true'] {
+      color: var(--status-delayed);
+    }
+  }
+}
+
+// ---------------------------------------------------------------- list
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.count {
+  margin-left: 0.35rem;
+  opacity: 0.7;
+  font-variant-numeric: tabular-nums;
+}
+
+.none {
+  padding: 1.5rem 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+  text-align: center;
+}
+
+.head,
+.row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 96px 110px 150px 120px;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.head {
+  @include eyebrow;
+  padding: 0 0.25rem 0.5rem;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.62rem;
+
+  span:last-child {
+    text-align: right;
+  }
+
+  @include respond-to(sm) {
+    display: none;
+  }
+}
+
+.row {
+  padding: 0.75rem 0.25rem;
+
+  & + & {
+    border-top: 1px solid var(--border);
+  }
+
+  @include respond-to(sm) {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.35rem 0.75rem;
+
+    .what {
+      grid-column: 1 / -1;
+    }
+
+    .date[data-label]::before {
+      content: attr(data-label) ': ';
+    }
+
+    .date[data-empty='true'] {
+      display: none;
+    }
+  }
+}
+
+.what {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  min-width: 0;
+
+  .icon {
+    width: 26px;
+    height: 26px;
+    margin-top: 0.1rem;
+  }
+}
+
+.titles {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.35;
+
+  strong {
+    @include truncate;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  > span {
+    @include truncate;
+    color: var(--muted);
+    font-size: 0.78rem;
+  }
+}
+
+.id {
+  font-family: $font-mono;
+  font-size: 0.72rem;
+}
+
+.titles .notes {
+  margin-top: 0.15rem;
+  color: var(--text-2);
+  font-style: italic;
+}
+
+.state {
+  display: inline-block;
+  padding: 0.18rem 0.6rem;
+  border-radius: $radius-pill;
+  background: color-mix(in srgb, var(--tone) 12%, transparent);
+  color: var(--tone);
+  font-size: 0.72rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.date {
+  color: var(--text-2);
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+
+  &[data-late='overdue'] {
+    color: var(--status-delayed);
+    font-weight: 600;
+  }
+
+  &[data-late='paid-late'] {
+    color: var(--status-at-risk);
+  }
+}
+
+.amount {
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+
+  .row[data-kind='collection'] & {
+    color: var(--status-on-track);
+  }
+
+  .row[data-state='completed'] & {
+    opacity: 0.75;
+  }
+}

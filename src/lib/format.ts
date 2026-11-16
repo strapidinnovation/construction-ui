@@ -1,4 +1,10 @@
-import type { ProjectStatus } from '../api/types.ts';
+import type {
+  ChangeOrderKind,
+  ChangeOrderStatus,
+  ProjectStatus,
+  StageId,
+  VendorType,
+} from '../api/types.ts';
 
 const usd = new Intl.NumberFormat('en-US', {
   style: 'currency',
@@ -83,6 +89,7 @@ export function scheduleText(daysLate: number) {
 }
 
 export const STATUS_LABEL: Record<ProjectStatus, string> = {
+  planning: 'Planning',
   'on-track': 'On track',
   'at-risk': 'At risk',
   delayed: 'Delayed',
@@ -95,7 +102,47 @@ export const STATUS_ORDER: ProjectStatus[] = [
   'at-risk',
   'on-hold',
   'on-track',
+  'planning',
   'completed',
 ];
 
 export const titleCase = (s: string) => s.replace(/-/g, ' ').replace(/^\w/, (c) => c.toUpperCase());
+
+export const STAGE_LABEL: Record<StageId, string> = {
+  'pre-construction': 'Pre-construction',
+  permitting: 'Permitting',
+  'site-prep': 'Site prep',
+  foundation: 'Foundation',
+  framing: 'Framing',
+  'dry-in': 'Dry-in',
+  'rough-ins': 'Rough-ins',
+  'insulation-drywall': 'Insulation & drywall',
+  exterior: 'Exterior',
+  'interior-finishes': 'Interior finishes',
+  'final-installs': 'Final installs',
+  closeout: 'Close-out',
+};
+
+export const CHANGE_ORDER_STATUS_LABEL: Record<ChangeOrderStatus, string> = {
+  pending: 'Pending',
+  approved: 'Approved',
+  rejected: 'Rejected',
+};
+
+export const CHANGE_ORDER_KIND_LABEL: Record<ChangeOrderKind, string> = {
+  small: 'Small change',
+  design: 'Design change',
+};
+
+/** +$4,200 / −$1,150 */
+export const formatSignedUsd = (n: number) => `${n < 0 ? '−' : '+'}${usd.format(Math.abs(n))}`;
+
+/** +3 days / −1 day / No days */
+export const formatSignedDays = (n: number) =>
+  n === 0 ? 'No days' : `${n < 0 ? '−' : '+'}${Math.abs(n)} day${Math.abs(n) === 1 ? '' : 's'}`;
+
+export const VENDOR_TYPE_LABEL: Record<VendorType, string> = {
+  subcontractor: 'Subcontractor',
+  supplier: 'Supplier',
+  consultant: 'Consultant',
+};

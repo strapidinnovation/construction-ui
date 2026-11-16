@@ -1,0 +1,244 @@
+@use '@/styles/mixins' as *;
+
+.card {
+  @include card;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  padding: 1.25rem;
+  min-width: 0;
+  transition:
+    border-color $transition,
+    box-shadow $transition;
+
+  &:hover {
+    border-color: var(--border-strong);
+    box-shadow: var(--shadow-md);
+  }
+
+  &[data-status='inactive'] {
+    background: var(--surface-2);
+
+    .avatar {
+      background: var(--surface-3);
+      color: var(--muted);
+    }
+  }
+}
+
+.top {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.avatar {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: $radius;
+  background: var(--accent-soft);
+  color: var(--brand-primary);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.titles {
+  flex: 1;
+  min-width: 0;
+
+  h3 {
+    @include truncate;
+    font-size: 1.02rem;
+    font-weight: 700;
+  }
+}
+
+.trade {
+  @include line-clamp(2);
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.badges {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  align-items: flex-end;
+  gap: 0.3rem;
+}
+
+.type,
+.inactive {
+  padding: 0.2rem 0.6rem;
+  border-radius: $radius-pill;
+  font-size: 0.72rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.type {
+  background: var(--accent-soft);
+  color: var(--brand-primary);
+
+  &[data-type='supplier'] {
+    background: rgb(123 90 255 / 0.1);
+    color: #5b3ce0;
+  }
+
+  &[data-type='consultant'] {
+    background: rgb(18 25 94 / 0.08);
+    color: var(--brand-tertiary);
+  }
+}
+
+.inactive {
+  background: var(--surface-3);
+  color: var(--muted);
+}
+
+.summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 1rem;
+  font-size: 0.82rem;
+
+  &:empty {
+    display: none;
+  }
+}
+
+.rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.1rem;
+
+  svg {
+    color: var(--border-strong);
+    fill: currentColor;
+
+    &[data-filled='true'] {
+      color: #f5a623;
+    }
+  }
+
+  span {
+    margin-left: 0.3rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.area {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: var(--muted);
+}
+
+.stages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    padding: 0.22rem 0.55rem;
+    border: 1px solid var(--border);
+    border-radius: $radius-pill;
+    color: var(--text-2);
+    font-size: 0.72rem;
+    white-space: nowrap;
+  }
+}
+
+.contact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0.85rem 0 0;
+  border-top: 1px solid var(--border);
+  list-style: none;
+  font-size: 0.84rem;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 0;
+
+    svg {
+      flex-shrink: 0;
+      color: var(--muted);
+    }
+  }
+
+  a {
+    @include truncate;
+    color: var(--text-2);
+    @include focus-ring;
+
+    &:hover {
+      color: var(--accent);
+      text-decoration: underline;
+    }
+  }
+}
+
+.notes {
+  @include line-clamp(3);
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: auto;
+}
+
+.insurance,
+.license {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: $radius-pill;
+  background: var(--surface-2);
+  color: var(--text-2);
+  font-size: 0.74rem;
+  white-space: nowrap;
+}
+
+.insurance {
+  &[data-tone='ok'] svg {
+    color: var(--success);
+  }
+
+  &[data-tone='soon'] {
+    background: color-mix(in srgb, var(--status-at-risk) 12%, transparent);
+    color: var(--status-at-risk);
+  }
+
+  &[data-tone='expired'] {
+    background: color-mix(in srgb, var(--danger) 12%, transparent);
+    color: var(--danger);
+  }
+
+  &[data-tone='none'] {
+    color: var(--muted);
+  }
+}
+
+.license {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}

@@ -8,6 +8,7 @@ import Home from './pages/Home/Home.tsx';
 import NotFound from './pages/NotFound/NotFound.tsx';
 import ProjectDetail from './pages/ProjectDetail/ProjectDetail.tsx';
 import Projects from './pages/Projects/Projects.tsx';
+import Vendors from './pages/Vendors/Vendors.tsx';
 
 export const router = createBrowserRouter([
   {
@@ -18,6 +19,7 @@ export const router = createBrowserRouter([
       { path: 'dashboard', element: <Dashboard /> },
       { path: 'projects', element: <Projects /> },
       { path: 'projects/:id', element: <ProjectDetail /> },
+      { path: 'vendors', element: <Vendors /> },
       {
         path: 'chat',
         element: <ChatLayout />,

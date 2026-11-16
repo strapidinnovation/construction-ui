@@ -3,13 +3,20 @@ import { removeMessage, upsertMessage } from './cache.ts';
 import { api, ApiError } from './client.ts';
 import { keys } from './keys.ts';
 import type {
+  ChangeOrder,
+  ChangeOrderSummary,
   ChatMessage,
   Conversation,
   ConversationListItem,
+  Order,
+  Payment,
+  PaymentSummary,
   ProjectCounts,
   ProjectDetail,
+  ProjectDocument,
   ProjectFilter,
   ProjectSummary,
+  Vendor,
 } from './types.ts';
 
 export function useHealth() {
@@ -47,6 +54,57 @@ export function useProject(id: string | undefined) {
       api<ProjectDetail>(`/projects/${encodeURIComponent(id ?? '')}`, { signal }),
     enabled: Boolean(id),
     retry: (count, error) => !(error instanceof ApiError && error.status === 404) && count < 2,
+  });
+}
+
+export function useVendors() {
+  return useQuery({
+    queryKey: keys.vendors,
+    queryFn: ({ signal }) => api<{ vendors: Vendor[] }>('/vendors', { signal }),
+    select: (data) => data.vendors,
+  });
+}
+
+export function useProjectOrders(projectId: string) {
+  return useQuery({
+    queryKey: keys.projectOrders(projectId),
+    queryFn: ({ signal }) =>
+      api<{ orders: Order[] }>(`/orders?projectId=${encodeURIComponent(projectId)}`, { signal }),
+    select: (data) => data.orders,
+  });
+}
+
+export function useProjectPayments(projectId: string) {
+  return useQuery({
+    queryKey: keys.projectPayments(projectId),
+    queryFn: ({ signal }) =>
+      api<{ payments: Payment[]; summary: PaymentSummary }>(
+        `/payments?projectId=${encodeURIComponent(projectId)}`,
+        { signal },
+      ),
+  });
+}
+
+export function useProjectChangeOrders(projectId: string) {
+  return useQuery({
+    queryKey: keys.projectChangeOrders(projectId),
+    queryFn: ({ signal }) =>
+      api<{ changeOrders: ChangeOrder[]; summary: ChangeOrderSummary }>(
+        `/change-orders?projectId=${encodeURIComponent(projectId)}`,
+        { signal },
+      ),
+  });
+}
+
+export function useProjectDocuments(projectId: string) {
+  return useQuery({
+    queryKey: keys.projectDocuments(projectId),
+    queryFn: ({ signal }) =>
+      api<{ documents: ProjectDocument[] }>(
+        `/projects/${encodeURIComponent(projectId)}/documents`,
+        { signal },
+      ),
+    select: (data) => data.documents,
   });
 }
 

@@ -1,4 +1,4 @@
-import { FolderKanban, LayoutDashboard, MessageSquare } from 'lucide-react';
+import { FolderKanban, LayoutDashboard, MessageSquare, Users } from 'lucide-react';
 import { NavLink, Outlet } from 'react-router';
 import { useHealth } from '../../api/queries.ts';
 import { RuhMark } from '../../components/RuhMark/RuhMark.tsx';
@@ -8,6 +8,7 @@ import styles from './AppLayout.module.scss';
 const NAV = [
   { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, end: false },
   { to: '/projects', label: 'Projects', icon: FolderKanban, end: false },
+  { to: '/vendors', label: 'Vendors', icon: Users, end: false },
   { to: '/chat', label: 'Chat', icon: MessageSquare, end: false },
 ];
 

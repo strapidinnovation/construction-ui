@@ -12,11 +12,19 @@ import {
   MessageSquare,
 } from 'lucide-react';
 import type { CSSProperties } from 'react';
-import { Link, useNavigate, useParams } from 'react-router';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router';
 import { ApiError } from '../../api/client.ts';
-import { useCreateConversation, useProject } from '../../api/queries.ts';
+import {
+  useCreateConversation,
+  useProject,
+  useProjectChangeOrders,
+  useProjectDocuments,
+  useProjectOrders,
+  useProjectPayments,
+} from '../../api/queries.ts';
 import type { Inspection, Issue, ProjectDetail as Project, Stage } from '../../api/types.ts';
 import { Button, ButtonLink } from '../../components/Button/Button.tsx';
+import { FilterTabs } from '../../components/FilterBar/FilterBar.tsx';
 import { Card, PageContainer } from '../../components/Page/Page.tsx';
 import { ProgressBar } from '../../components/ProgressBar/ProgressBar.tsx';
 import { EmptyState, ErrorState, Skeleton, Spinner } from '../../components/States/States.tsx';
@@ -25,6 +33,8 @@ import {
   daysBetween,
   formatDate,
   formatNumber,
+  formatSignedDays,
+  formatSignedUsd,
   formatUsd,
   formatUsdCompact,
   initials,
@@ -32,6 +42,11 @@ import {
   titleCase,
 } from '../../lib/format.ts';
 import styles from './ProjectDetail.module.scss';
+import { ProjectChangeOrders } from './ProjectChangeOrders.tsx';
+import { ProjectDocuments } from './ProjectDocuments.tsx';
+import { ProjectOrders } from './ProjectOrders.tsx';
+import { ProjectPayments } from './ProjectPayments.tsx';
+import { ProjectVendors } from './ProjectVendors.tsx';
 
 export default function ProjectDetail() {
   const { id = '' } = useParams();
@@ -78,19 +93,26 @@ function BackLink() {
   );
 }
 
+const TABS = ['overview', 'vendors', 'orders', 'payments', 'change-orders', 'documents'] as const;
+type Tab = (typeof TABS)[number];
+const isTab = (v: string | null): v is Tab => (TABS as readonly string[]).includes(v ?? '');
+
 function ProjectView({ project: p }: { project: Project }) {
   const navigate = useNavigate();
   const createChat = useCreateConversation();
+  const orders = useProjectOrders(p.id);
+  const payments = useProjectPayments(p.id);
+  const documents = useProjectDocuments(p.id);
+  const changeOrders = useProjectChangeOrders(p.id);
+  const changeOrderDays = changeOrders.data?.summary.approved.days ?? 0;
+  const overduePayments = payments.data?.payments.filter((x) => x.state === 'overdue').length;
+
+  const [params, setParams] = useSearchParams();
+  const rawTab = params.get('tab');
+  const tab: Tab = isTab(rawTab) ? rawTab : 'overview';
 
   const askAgent = () =>
     createChat.mutate(p.id, { onSuccess: (c) => void navigate(`/chat/${c.id}`) });
-
-  const spent = p.budget.contractUsd ? (p.budget.spentUsd / p.budget.contractUsd) * 100 : 0;
-  const delayDays = p.delayCauses
-    .filter((i) => i.status === 'open')
-    .reduce((n, i) => n + i.impactDays, 0);
-  const openIssues = [...p.openIssues].sort((a, b) => b.impactDays - a.impactDays);
-  const resolved = p.issues.filter((i) => i.status === 'resolved');
 
   return (
     <PageContainer>
@@ -125,15 +147,122 @@ function ProjectView({ project: p }: { project: Project }) {
         </div>
       )}
 
+      <div className={styles.tabs}>
+        <FilterTabs
+          label="Project sections"
+          options={[
+            { value: 'overview', label: 'Overview' },
+            {
+              value: 'vendors',
+              label: (
+                <>
+                  Vendors <span className={styles.tabCount}>{p.vendors.length}</span>
+                </>
+              ),
+            },
+            {
+              value: 'orders',
+              label: (
+                <>
+                  Orders
+                  {orders.data && <span className={styles.tabCount}>{orders.data.length}</span>}
+                </>
+              ),
+            },
+            {
+              value: 'payments',
+              label: (
+                <>
+                  Payments
+                  {!!overduePayments && (
+                    <span className={styles.tabAlert} title="Overdue payments">
+                      {overduePayments}
+                    </span>
+                  )}
+                </>
+              ),
+            },
+            {
+              value: 'change-orders',
+              label: (
+                <>
+                  Change orders
+                  {p.pendingChangeOrders > 0 ? (
+                    <span className={styles.tabAlert} title="Waiting for the client">
+                      {p.pendingChangeOrders}
+                    </span>
+                  ) : (
+                    changeOrders.data && (
+                      <span className={styles.tabCount}>
+                        {changeOrders.data.changeOrders.length}
+                      </span>
+                    )
+                  )}
+                </>
+              ),
+            },
+            {
+              value: 'documents',
+              label: (
+                <>
+                  Documents
+                  {documents.data && (
+                    <span className={styles.tabCount}>{documents.data.length}</span>
+                  )}
+                </>
+              ),
+            },
+          ]}
+          value={tab}
+          onChange={(t) => setParams(t === 'overview' ? {} : { tab: t }, { replace: true })}
+        />
+      </div>
+
+      {tab === 'vendors' ? (
+        <ProjectVendors vendors={p.vendors} />
+      ) : tab === 'orders' ? (
+        <ProjectOrders orders={orders} />
+      ) : tab === 'payments' ? (
+        <ProjectPayments payments={payments} client={p.client} />
+      ) : tab === 'change-orders' ? (
+        <ProjectChangeOrders changeOrders={changeOrders} project={p} />
+      ) : tab === 'documents' ? (
+        <ProjectDocuments documents={documents} address={p.address} />
+      ) : (
+        <Overview project={p} changeOrderDays={changeOrderDays} />
+      )}
+    </PageContainer>
+  );
+}
+
+function Overview({ project: p, changeOrderDays }: { project: Project; changeOrderDays: number }) {
+  const contract = p.budget.contractUsd + p.budget.approvedChangeOrdersUsd;
+  const spent = contract ? (p.budget.spentUsd / contract) * 100 : 0;
+  const delayDays = p.delayCauses
+    .filter((i) => i.status === 'open')
+    .reduce((n, i) => n + i.impactDays, 0);
+  const openIssues = [...p.openIssues].sort((a, b) => b.impactDays - a.impactDays);
+  const resolved = p.issues.filter((i) => i.status === 'resolved');
+
+  return (
+    <>
       <div className={styles.kpis}>
-        <div className={styles.kpi}>
-          <span className={styles.kpiLabel}>Progress</span>
-          <span className={styles.kpiValue}>{p.percentComplete}%</span>
-          <ProgressBar value={p.percentComplete} status={p.status} size="sm" label="Progress" />
-          <span className={styles.kpiNote}>
-            {p.doneStages} of {p.totalStages} stages done
-          </span>
-        </div>
+        {p.status === 'planning' ? (
+          <div className={styles.kpi}>
+            <span className={styles.kpiLabel}>Planned start</span>
+            <span className={styles.kpiValue}>{formatDate(p.dates.start, true)}</span>
+            <span className={styles.kpiNote}>Planning: construction hasn't started</span>
+          </div>
+        ) : (
+          <div className={styles.kpi}>
+            <span className={styles.kpiLabel}>Progress</span>
+            <span className={styles.kpiValue}>{p.percentComplete}%</span>
+            <ProgressBar value={p.percentComplete} status={p.status} size="sm" label="Progress" />
+            <span className={styles.kpiNote}>
+              {p.doneStages} of {p.totalStages} stages done
+            </span>
+          </div>
+        )}
         <div className={styles.kpi}>
           <span className={styles.kpiLabel}>
             {p.dates.actualFinish ? 'Finished' : 'Forecast finish'}
@@ -146,6 +275,9 @@ function ProjectView({ project: p }: { project: Project }) {
             <strong data-late={p.daysLate > 7} className={styles.late}>
               {scheduleText(p.daysLate)}
             </strong>
+            {changeOrderDays !== 0 &&
+              !p.dates.actualFinish &&
+              ` · ${formatSignedDays(changeOrderDays)} from change orders`}
           </span>
         </div>
         <div className={styles.kpi}>
@@ -153,9 +285,9 @@ function ProjectView({ project: p }: { project: Project }) {
           <span className={styles.kpiValue}>{formatUsdCompact(p.budget.spentUsd)}</span>
           <ProgressBar value={spent} size="sm" label="Budget spent" />
           <span className={styles.kpiNote}>
-            {Math.round(spent)}% of {formatUsd(p.budget.contractUsd)}
-            {p.budget.approvedChangeOrdersUsd > 0 &&
-              ` · +${formatUsdCompact(p.budget.approvedChangeOrdersUsd)} change orders`}
+            {contract ? `${Math.round(spent)}% of ${formatUsd(contract)}` : 'No budget yet'}
+            {p.budget.approvedChangeOrdersUsd !== 0 &&
+              ` · incl. ${formatSignedUsd(p.budget.approvedChangeOrdersUsd)} change orders`}
           </span>
         </div>
         <div className={styles.kpi}>
@@ -279,7 +411,7 @@ function ProjectView({ project: p }: { project: Project }) {
           </ButtonLink>
         </div>
       </div>
-    </PageContainer>
+    </>
   );
 }
 

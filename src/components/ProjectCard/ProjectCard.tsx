@@ -1,4 +1,4 @@
-import { CalendarClock, MapPin, Wrench } from 'lucide-react';
+import { CalendarClock, FilePenLine, MapPin, Wrench } from 'lucide-react';
 import { Link } from 'react-router';
 import type { ProjectSummary } from '../../api/types.ts';
 import { formatDate, formatUsdCompact, scheduleText } from '../../lib/format.ts';
@@ -8,7 +8,8 @@ import { StatusBadge } from '../StatusBadge/StatusBadge.tsx';
 
 export function ProjectCard({ project: p }: { project: ProjectSummary }) {
   const stage = p.currentStages.map((s) => `${s.label} ${s.percent}%`).join(' · ');
-  const spent = p.budget.contractUsd ? (p.budget.spentUsd / p.budget.contractUsd) * 100 : 0;
+  const contract = p.budget.contractUsd + p.budget.approvedChangeOrdersUsd;
+  const spent = contract ? (p.budget.spentUsd / contract) * 100 : 0;
 
   return (
     <Link to={`/projects/${p.id}`} className={styles.card} data-status={p.status}>
@@ -32,7 +33,9 @@ export function ProjectCard({ project: p }: { project: ProjectSummary }) {
               ? 'Complete'
               : p.onHold
                 ? `On hold since ${formatDate(p.onHold.since)}`
-                : stage || 'Not started'}
+                : p.status === 'planning'
+                  ? `Planning · starts ${formatDate(p.dates.start)}`
+                  : stage || 'Not started'}
           </span>
           <strong>{p.percentComplete}%</strong>
         </div>
@@ -55,7 +58,7 @@ export function ProjectCard({ project: p }: { project: ProjectSummary }) {
           <dt>Budget</dt>
           <dd>
             {formatUsdCompact(p.budget.spentUsd)}
-            <span className={styles.of}> / {formatUsdCompact(p.budget.contractUsd)}</span>
+            <span className={styles.of}> / {formatUsdCompact(contract)}</span>
           </dd>
         </div>
       </dl>
@@ -66,6 +69,12 @@ export function ProjectCard({ project: p }: { project: ProjectSummary }) {
           <Wrench size={13} />
           {p.openIssueCount} open issue{p.openIssueCount === 1 ? '' : 's'}
         </span>
+        {p.pendingChangeOrders > 0 && (
+          <span className={styles.chip} data-alert title="Change orders waiting for the client">
+            <FilePenLine size={13} />
+            {p.pendingChangeOrders} change order{p.pendingChangeOrders === 1 ? '' : 's'} pending
+          </span>
+        )}
         {p.nextInspection && (
           <span className={styles.chip}>
             <CalendarClock size={13} />

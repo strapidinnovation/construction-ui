@@ -95,7 +95,9 @@ function Stats({ counts }: { counts?: ProjectCounts }) {
   return (
     <div className={styles.stats}>
       <Stat icon={<FolderKanban size={18} />} label="Active projects" value={counts.ongoing}>
-        {counts.total} total · {byStatus.completed} completed
+        {counts.total} total
+        {byStatus.planning > 0 && ` · ${byStatus.planning} planning`} · {byStatus.completed}{' '}
+        completed
       </Stat>
       <Stat
         icon={<TriangleAlert size={18} />}
@@ -179,7 +181,9 @@ function StatusBreakdown({ counts }: { counts?: ProjectCounts }) {
 }
 
 function Attention({ projects, error }: { projects?: ProjectSummary[]; error: Error | null }) {
-  const flagged = projects?.filter((p) => p.status !== 'on-track');
+  const flagged = projects?.filter(
+    (p) => p.status === 'delayed' || p.status === 'at-risk' || p.status === 'on-hold',
+  );
   return (
     <Card
       title="Needs attention"

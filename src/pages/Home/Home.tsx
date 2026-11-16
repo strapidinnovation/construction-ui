@@ -14,6 +14,7 @@ import {
   PencilRuler,
   Sofa,
   Sparkles,
+  Users,
   type LucideIcon,
 } from 'lucide-react';
 import { Link } from 'react-router';
@@ -114,6 +115,12 @@ const AREAS = [
     icon: FolderKanban,
     title: 'Projects',
     text: 'Every build with its schedule, budget, issues, team and site log.',
+  },
+  {
+    to: '/vendors',
+    icon: Users,
+    title: 'Vendors',
+    text: 'Subcontractors, suppliers and consultants, with contacts, stages and insurance.',
   },
   {
     to: '/chat',
